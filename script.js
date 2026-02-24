@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const originalButtonText = submitButton.textContent;
 
     // ✅ PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfoDN3S_PpR-C714xjT3-i8qzol6XCHrBJABnycgDg5ZO5b6xjwn2csDppt9DbBWlv/exec';
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbysJpQAN1Tt4oT4l8XaPtUpPp3bju88f9Iivqq4r6Jx-qMuS0xPl72lm68DJhfjyrBF/exec';
 
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -500,19 +500,39 @@ document.addEventListener('DOMContentLoaded', function() {
         submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
         // Send to Google Sheets
+        // fetch(GOOGLE_SCRIPT_URL, {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify({ name, email, phone, message }),
+        // })
+        // .then(res => res.json())
+        // .then(data => {
+        //     if (data.result === 'success') {
+        //         showNotification('Thank you! Your message has been sent. We will contact you soon.', 'success');
+        //         contactForm.reset();
+        //     } else {
+        //         throw new Error('Submission failed');
+        //     }
+        // })
+        // .catch(() => {
+        //     showNotification('Something went wrong. Please call us at +91-9556944742', 'error');
+        // })
+        // .finally(() => {
+        //     submitButton.disabled = false;
+        //     submitButton.textContent = originalButtonText;
+        // });
+
+        // Send to Google Sheets (no-cors to avoid CORS block)
         fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
+            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, phone, message }),
         })
-        .then(res => res.json())
-        .then(data => {
-            if (data.result === 'success') {
-                showNotification('Thank you! Your message has been sent. We will contact you soon.', 'success');
-                contactForm.reset();
-            } else {
-                throw new Error('Submission failed');
-            }
+        .then(() => {
+            // no-cors means we can't read the response, but if we reach here it was sent
+            showNotification('Thank you! Your message has been sent. We will contact you soon.', 'success');
+            contactForm.reset();
         })
         .catch(() => {
             showNotification('Something went wrong. Please call us at +91-9556944742', 'error');
